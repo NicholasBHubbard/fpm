@@ -15,6 +15,7 @@ jobs:
     - run: |
         sudo apt-get update
         sudo apt install -y libarchive-tools lintian cpanminus
+        sudo python3 -m pip install --upgrade wheel
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
@@ -28,8 +29,3 @@ jobs:
         fi
       env:
         SHELL: /usr/bin/bash
-    - name: Setup tmate session on failure
-      if: failure()
-      uses: mxschmitt/action-tmate@v3
-      with:
-        limit-access-to-actor: true
