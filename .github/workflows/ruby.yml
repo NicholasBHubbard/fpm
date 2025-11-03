@@ -22,6 +22,7 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - run: |
         # python venv
+        python -m venv venv
         . venv/bin/activate
         # perl local::lib
         cpanm --local-lib=~/perl5 local::lib
