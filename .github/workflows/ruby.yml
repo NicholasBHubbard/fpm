@@ -29,7 +29,7 @@ jobs:
         cpanm --local-lib=~/perl5 local::lib
         eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
         echo HERE
-        env
+        echo $PATH
         # run the tests
         if [ ! -z "$RUNNER_DEBUG" ] ; then
           DEBUG=1 bundle exec rspec -fd
