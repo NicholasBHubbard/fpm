@@ -215,7 +215,7 @@ describe FPM::Package::Python do
 
       insist { subject.name } == "#{prefix}-testpkg123"
       insist { subject.version } == "0.0.1"
-      insist { subject.maintainer } == "srishti.seth@hpe.com"
+      insist { subject.maintainer } == "<srishti.seth@hpe.com>"
       insist { subject.architecture } == "all"
       insist { subject.dependencies } == [ ]
 
