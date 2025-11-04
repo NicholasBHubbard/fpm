@@ -21,10 +21,14 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - run: |
-        #TODO:
+        # Run the test-suite
+
+        # NHUBBARD 20251104; we have to use a Python virtual environment as it is required by newer versions of the `pip` Python package installer, although we are not yet exactly sure why;
+        #
         python -m venv venv
         . venv/bin/activate
-        pip install packaging
+        pip install pipreqs && pipreqs . && pip install -r requirements.txt
+
         if [ ! -z "$RUNNER_DEBUG" ] ; then
           DEBUG=1 bundle exec rspec -fd
         else
