@@ -210,12 +210,12 @@ describe FPM::Package::Python do
 
   context "when input is a name" do
     it "should download from pypi" do
-      subject.input("word2number==1.0")
+      subject.input("baygon==0.6.1")
       prefix = subject.attributes[:python_package_name_prefix]
 
-      insist { subject.name } == "#{prefix}-word2number"
-      insist { subject.version } == "1.0"
-      insist { subject.maintainer } == "akshaynagpal"
+      insist { subject.name } == "#{prefix}-baygon"
+      insist { subject.version } == "0.6.1"
+      insist { subject.maintainer } == "yves-chevallier"
       insist { subject.architecture } == "all"
       insist { subject.dependencies } == [ ]
 
