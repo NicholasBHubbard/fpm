@@ -21,8 +21,10 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - run: |
+        #TODO:
         python -m venv venv
         . venv/bin/activate
+        pip install packaging
         if [ ! -z "$RUNNER_DEBUG" ] ; then
           DEBUG=1 bundle exec rspec -fd
         else
