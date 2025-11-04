@@ -23,8 +23,13 @@ jobs:
     - run: |
         # Run the test-suite
 
-        # NHUBBARD 20251104; we have to use a Python virtual environment as it is required by newer versions of the `pip` Python package installer, although we are not yet exactly sure why;
-        #
+        # NHUBBARD 20251104: we have to use a Python virtual environment because
+        # it is required by newer versions of the `pip` Python package installer;
+        # install `pipreqs` and use it to automatically find and install missing
+        # Python dependencies, which is important because the "packaging" package
+        # was missing from 'parse_requires.py', and by using `pipreqs` we can
+        # automatically avoid future breakages if new Python dependencies are
+        # introduced
         python -m venv venv
         . venv/bin/activate
         pip install pipreqs && pipreqs . && pip install -r requirements.txt
