@@ -34,6 +34,7 @@ jobs:
         . venv/bin/activate
         pip install pipreqs && pipreqs . && pip install -r requirements.txt
 
+        echo PATH = $PATH
         if [ ! -z "$RUNNER_DEBUG" ] ; then
           DEBUG=1 bundle exec rspec -fd
         else
