@@ -400,7 +400,7 @@ describe FPM::Package::Deb do
       subject.attributes[:deb_user] = "root"
       subject.attributes[:deb_group] = "root"
       subject.category = "comm"
-      subject.dependencies << "lsb-base"
+      subject.dependencies << "vim"
 
       subject.instance_variable_set(:@staging_path, staging_path)
 
