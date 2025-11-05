@@ -24,9 +24,8 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install packaging # packaging is needed for 'parse_requires.py'
+        pip install -r requirements.txt -r spec/test-requirements.txt
 
-        echo PATH = $PATH
         if [ ! -z "$RUNNER_DEBUG" ] ; then
           DEBUG=1 bundle exec rspec -fd
         else
