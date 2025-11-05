@@ -20,7 +20,8 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - run: | # Run the test-suite
+    - name: Run test suite
+      run: |
         python -m venv venv
         . venv/bin/activate
         pip install packaging # packaging is needed for 'parse_requires.py'
