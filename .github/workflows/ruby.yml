@@ -22,6 +22,7 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run test suite
       run: |
+        # use a Python venv to avoid the mess of interacting with system Python packages
         python -m venv venv
         . venv/bin/activate
         pip install -r requirements.txt -r spec/test-requirements.txt
