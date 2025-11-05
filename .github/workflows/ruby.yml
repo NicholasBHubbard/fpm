@@ -20,19 +20,10 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - run: |
-        # Run the test-suite
-
-        # NHUBBARD 20251104: we have to use a Python virtual environment because
-        # it is required by newer versions of the `pip` Python package installer;
-        # install `pipreqs` and use it to automatically find and install missing
-        # Python dependencies, which is important because the "packaging" package
-        # was missing from 'parse_requires.py', and by using `pipreqs` we can
-        # automatically avoid future breakages if new Python dependencies are
-        # introduced
+    - run: | # Run the test-suite
         python -m venv venv
         . venv/bin/activate
-        pip install pipreqs && pipreqs . && pip install -r requirements.txt
+        pip install packaging # packaging is needed for 'parse_requires.py'
 
         echo PATH = $PATH
         if [ ! -z "$RUNNER_DEBUG" ] ; then
