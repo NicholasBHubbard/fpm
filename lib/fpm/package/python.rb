@@ -594,6 +594,12 @@ class FPM::Package::Python < FPM::Package
     end
   end # def fix_name
 
+  def pip_install_dir()
+    execmd([attributes[:python_bin], "-c", "import sysconfig; from pathlib import Path; print(Path(sysconfig.get_path('purelib')).parent)"], :stdin => false, :stderr => false) do |stdout|
+      return stdout.read(64<<10).strip()
+    end
+  end
+
   # Install this package to the staging directory
   def install_to_staging(path)
     prefix = "/"
@@ -602,10 +608,10 @@ class FPM::Package::Python < FPM::Package
     # XXX: Note: pip doesn't seem to have any equivalent to `--install-lib` or similar flags.
     # XXX: Deprecate :python_install_data, :python_install_lib, :python_install_bin
     # XXX: Deprecate: :python_setup_py_arguments
-    flags = [ "--root", staging_path ]
-    flags += [ "--prefix", prefix ] if !attributes[:prefix].nil?
-
+    flags = [ "--target", staging_path + pip_install_dir() ]
+    #flags += [ "--prefix", prefix ] if !attributes[:prefix].nil?
     safesystem(*attributes[:python_pip], "install", "--no-deps", *flags, path)
+    require 'pry'; binding.pry #DEBUG:
   end # def install_to_staging
 
   public(:input)
