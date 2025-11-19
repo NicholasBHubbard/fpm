@@ -19,8 +19,8 @@ def evaluate_requirements(fd):
                 if len(req.specifier) > 0:
                     for spec in req.specifier:
                         yield "%s%s" % (req.name, spec)
-                    else:
-                        yield str(req.name)
+                else:
+                    yield str(req.name)
         except packaging.markers.UndefinedEnvironmentName:
             # Include requirement if we can't evaluate the marker
             yield str(req)
