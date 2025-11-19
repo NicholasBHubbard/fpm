@@ -14,11 +14,15 @@ def evaluate_requirements(fd):
     
     for req in all_requirements:
         # XXX: Note: marker.evaluate() can be given a dict() containing environment values to overwrite
-        if req.marker is None or req.marker.evaluate(environment={'extra':''}):
-            if len(req.specifier) > 0:
-                for spec in req.specifier:
-                    yield "%s%s" % (req.name, spec)
-            else:
-                yield str(req.name)
+        try:
+            if req.marker is None or req.marker.evaluate():
+                if len(req.specifier) > 0:
+                    for spec in req.specifier:
+                        yield "%s%s" % (req.name, spec)
+                    else:
+                        yield str(req.name)
+        except packaging.markers.UndefinedEnvironmentName:
+            # Include requirement if we can't evaluate the marker
+            yield str(req)
 
 print(json.dumps(list(evaluate_requirements(sys.stdin))))
