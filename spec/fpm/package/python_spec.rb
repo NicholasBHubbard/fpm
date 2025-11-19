@@ -218,7 +218,6 @@ describe FPM::Package::Python do
       insist { subject.maintainer } == "Pallets <contact@palletsprojects.com>"
       insist { subject.architecture } == "all"
       insist { subject.dependencies } == [ ]
-
     end
   end
 
