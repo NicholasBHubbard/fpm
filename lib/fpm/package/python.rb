@@ -606,7 +606,7 @@ class FPM::Package::Python < FPM::Package
     flags += [ "--prefix", prefix ] if !attributes[:prefix].nil?
     # flags += [ "--ignore-installed" ]
 
-    safesystem(*attributes[:python_pip], "install", "--no-deps", *flags, path)
+    safesystem(*attributes[:python_pip], "install", "--no-deps", "--ignore-installed", *flags, path)
   end # def install_to_staging
 
   public(:input)
