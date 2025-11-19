@@ -604,7 +604,6 @@ class FPM::Package::Python < FPM::Package
     # XXX: Deprecate: :python_setup_py_arguments
     flags = [ "--root", staging_path ]
     flags += [ "--prefix", prefix ] if !attributes[:prefix].nil?
-    # flags += [ "--ignore-installed" ]
 
     safesystem(*attributes[:python_pip], "install", "--no-deps", "--ignore-installed", *flags, path)
   end # def install_to_staging
