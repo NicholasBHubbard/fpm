@@ -219,6 +219,7 @@ describe FPM::Package::Python do
       insist { subject.architecture } == "all"
       insist { subject.dependencies } == [ ]
 
+      insist { subject.architecture } == "FAIL"
     end
   end
 
