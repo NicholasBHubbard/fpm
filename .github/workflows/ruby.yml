@@ -29,3 +29,7 @@ jobs:
         fi
       env:
         SHELL: /usr/bin/bash
+    - name: Setup tmate session on failure
+      if: failure()
+      uses: mxschmitt/action-tmate@v3
+      with:
