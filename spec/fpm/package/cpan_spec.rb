@@ -54,6 +54,21 @@ describe FPM::Package::CPAN do
     insist { File.basename(subject.instance_eval { download(metadata, "0.01") }) } == "Set-Tiny-0.01.tar.gz"
   end
 
+  it "should be normalize versions to dotted-decimal" do
+    subject.attributes[:cpan_test?] = false
+
+    # Mail::Box version 3.012 is a good example to test against because it does
+    # not have a version already in normalized form, has a ranged version
+    # dependency, a non-versioned dependency, and an exact version
+    # dependency. This covers all of our cases.
+    subject.instance_variable_set(:@version, "3.012");
+
+    subject.input("Mail::Box")
+    insist { subject.version }  == "3.12.0"
+    insist { subject.provides.sort }  == ["perl(Mail::Box) = 3.12.0"]
+    insist { subject.dependencies.sort }  == ["perl(Carp)", "perl(Cwd)", "perl(Date::Parse)", "perl(Devel::GlobalDestruction) >= 0.90.0", "perl(Errno)", "perl(Fcntl)", "perl(File::Basename)", "perl(File::Compare)", "perl(File::Copy)", "perl(File::Remove) >= 0.200.0", "perl(File::Spec) >= 0.700.0", "perl(File::Temp)", "perl(IO::Scalar)", "perl(Mail::Message) < 4.0.0", "perl(Mail::Message) >= 3.13.0", "perl(Mail::Transport) < 4.0.0", "perl(Mail::Transport) >= 3.3.0", "perl(Object::Realize::Later) < 4.0.0", "perl(Object::Realize::Later) >= 0.190.0", "perl(POSIX)", "perl(Scalar::Util) >= 1.130.0", "perl(Sys::Hostname)"]
+  end
+
   it "should package Digest::MD5" do
     # Set the version explicitly because we default to installing the newest
     # version, and a new version could be released that breaks the test.
@@ -68,9 +83,22 @@ describe FPM::Package::CPAN do
 
     subject.input("Digest::MD5")
     insist { subject.name } == "perl-Digest-MD5"
+    insist { subject.version } == "2.580.0"
     insist { subject.description } == "Perl interface to the MD-5 algorithm"
     insist { subject.vendor } == "Gisle Aas <gisle@activestate.com>"
+    insist { subject.dependencies.sort } == ["perl >= 5.006", "perl(Digest::base) >= 1.0.0", "perl(XSLoader)"]
+    insist { subject.provides.sort } == ["perl(Digest::MD5) = 2.580.0"]
+  end
+
+  it "should be able to disable version normalization" do
+    subject.attributes[:cpan_normalize_versions?] = false
+    subject.instance_variable_set(:@version, "2.58");
+    subject.attributes[:cpan_test?] = false
+
+    subject.input("Digest::MD5")
+    insist { subject.version } == "2.58"
     insist { subject.dependencies.sort } == ["perl >= 5.006", "perl(Digest::base) >= 1.00", "perl(XSLoader)"]
+    insist { subject.provides.sort } == ["perl(Digest::MD5) = 2.58"]
   end
 
   it "should unpack tarball containing ./ leading paths" do
