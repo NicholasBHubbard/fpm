@@ -29,6 +29,9 @@ class FPM::Package::CPAN < FPM::Package
     :multivalued => true, :attribute_name => :rejects,
     :default => ['vars','warnings','strict','Config']
 
+  option "--normalize-versions", :flag,
+    "Normalize Perl versions into dotted-decimal form", :default => true
+
   option "--test", :flag,
     "Run the tests before packaging?", :default => true
 
@@ -109,8 +112,12 @@ class FPM::Package::CPAN < FPM::Package
     end
 
     unless metadata["module"].nil?
+      v = self.version
+      if attributes[:cpan_normalize_versions?]
+        v = version_normalized(v)
+      end
       metadata["module"].each do |m|
-        self.provides << cap_name(m["name"]) + " = #{self.version}"
+        self.provides << cap_name(m["name"]) + " = #{v}"
       end
     end
 
@@ -189,18 +196,32 @@ class FPM::Package::CPAN < FPM::Package
             if version.is_a?(String)
               version.split(/\s*,\s*/).each do |v|
                 if v =~ /\s*[><=]/
-                  self.dependencies << "#{name} #{v}"
+                  cmp, v = v.split(' ')
+                  if attributes[:cpan_normalize_versions?]
+                    v = version_normalized(v)
+                  end
+                  self.dependencies << "#{name} #{cmp} #{v}"
                 else
+                  if attributes[:cpan_normalize_versions?]
+                    v = version_normalized(v)
+                  end
                   self.dependencies << "#{name} >= #{v}"
                 end
               end
             else
-              self.dependencies << "#{name} >= #{version}"
+              if attributes[:cpan_normalize_versions?]
+                v = version_normalized(version)
+              end
+              self.dependencies << "#{name} >= #{v}"
             end
           end
         end
       end
     end #no_auto_depends
+
+    if attributes[:cpan_normalize_versions?]
+      self.version = version_normalized(self.version)
+    end
 
     ::Dir.chdir(moduledir) do
       # TODO(sissel): install build and config dependencies to resolve
@@ -401,6 +422,15 @@ class FPM::Package::CPAN < FPM::Package
       else; return [attributes[:cpan_package_name_prefix], name].join("-").gsub("::", "-")
     end
   end # def fix_name
+
+  def version_normalized(version)
+    execmd([attributes[:cpan_perl_bin],
+            "-M", "version",
+            "-e", "print substr(version->parse('#{version}')->normal, 1)"],
+           :stdin => false, :stderr => false) do |stdout|
+      return stdout.read(64<<10)
+    end
+  end # def version_normalized
 
   def httpfetch(url)
     uri = URI.parse(url)
